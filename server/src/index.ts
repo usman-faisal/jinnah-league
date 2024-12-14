@@ -9,6 +9,9 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { connectDb } from "./config/dbConnection";
 // Routes imports
 import authRoute from "./routes/auth.route";
+import bookRoute from "./routes/book.route";
+import notificationsRoute from "./routes/notification.route";
+
 import { app, server } from "./socket";
 
 config();
@@ -41,6 +44,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+app.use('/api/v1/books', bookRoute);
+app.use('/api/v1/notifications', notificationsRoute);
 
 // Middlewares
 app.use(errorMiddleware);
