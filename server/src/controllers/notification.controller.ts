@@ -11,7 +11,7 @@ export const getNotifications = async (
     try {
         if (!req.user) return next(throwError("Unauthorized Access", 401));
 
-        const notifications = await Notification.find({
+        const notifications = await Notification  .find({
             toUser: req.user._id
         })
 

@@ -6,6 +6,7 @@ import Logo from "../../public/logo.png"; // Replace this with your own logo ima
 import Lib from "../../public/lib.jpg"; // Replace this with your own image
 import { toast } from "sonner";
 import Link from "next/link"; 
+import {loginUser} from "../../API/auth"
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -58,25 +59,9 @@ export default function Login() {
       setLoading(false);
       return;
     }
-
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong!");
-      }
-
-      // Login success
+    const res = await loginUser(formData);
       toast.success("Login successful! Welcome back.");
-      // Optionally, redirect to a dashboard or homepage
     } catch (err: any) {
       toast.error(err.message || "An error occurred, please try again.");
     } finally {

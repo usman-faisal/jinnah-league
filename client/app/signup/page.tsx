@@ -6,6 +6,7 @@ import Lib from "../../public/lib.jpg"; // Replace this with your own image
 import Logo from "../../public/logo.png"; // Replace this with your own logo image
 import { toast } from "sonner";
 import Link from "next/link"; 
+import {registerUser} from "../../API/auth"
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -56,34 +57,17 @@ export default function SignUp() {
     return true;
   };
 
-  // Submit form data
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    // First, validate form data
+    setLoading(true)
     const isValid = validateForm();
     if (!isValid) {
       setLoading(false);
       return;
     }
-
     try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong!");
-      }
-
-      // Sign-up success
+      const res = await registerUser(formData);
       toast.success("Sign-up successful! You can now log in.");
       // Optionally, redirect to login page or home
     } catch (err: any) {
