@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import {  INotification } from "../types/type";
+import { Model, model, models, Schema } from "mongoose";
+import { INotification } from "../types/type";
 
 
 const NotificationSchema = new Schema<INotification>(
@@ -27,3 +27,6 @@ const NotificationSchema = new Schema<INotification>(
     },
     { timestamps: true }
 );
+
+export const Notification: Model<INotification> =
+    models.Notification || model<INotification>("Notification", NotificationSchema);
