@@ -4,18 +4,16 @@ import { Book } from "../models/book.model";
 import { AuthRequest } from "../middlewares/auth.middleware";
 import { getImageUrl, uploadFile } from "../services/storage.service";
 
-export const getBooks = async(
+export const getBooks = async (
     req: Request,
     res: Response,
     next: NextFunction
 ): Promise<any> => {
     try {
         const { category } = req.query;
-        if(category && typeof category === "string")
-        {
-            if(validateBookCategory(category))
-            {
-                const books = await Book.find({category});
+        if (category && typeof category === "string") {
+            if (validateBookCategory(category)) {
+                const books = await Book.find({ category });
                 return res.status(200).json({
                     success: true,
                     message: "Books fetched successfully",
@@ -25,7 +23,7 @@ export const getBooks = async(
                             url: getImageUrl(book.url),
                             cover: getImageUrl(book.cover)
                         }
-                    })                
+                    })
                 })
             }
         }
@@ -47,7 +45,7 @@ export const getBooks = async(
     }
 }
 
-export const getBook = async(
+export const getBook = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -55,8 +53,7 @@ export const getBook = async(
     try {
         const { id } = req.params;
         const book = await Book.findById(id)
-        if(!book)
-        {
+        if (!book) {
             return res.status(404).json({
                 success: false,
                 message: "Book not found"
@@ -72,7 +69,7 @@ export const getBook = async(
     }
 }
 
-export const updateBook = async(    
+export const updateBook = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
@@ -81,8 +78,7 @@ export const updateBook = async(
         const { id } = req.params;
         const { title, author, category } = req.body;
         const user = req.user;
-        if(!user)
-        {
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -90,8 +86,7 @@ export const updateBook = async(
         }
 
         const book = await Book.findById(id);
-        if(!book)
-        {
+        if (!book) {
             return res.status(404).json({
                 success: false,
                 message: "Book not found"
@@ -114,7 +109,7 @@ export const updateBook = async(
     }
 }
 
-export const addBook = async(
+export const addBook = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
@@ -122,28 +117,27 @@ export const addBook = async(
     try {
         const { title, author, category } = req.body;
         const image = (req as any).image as Express.Multer.File
-        const pdf = (req as any).pdf as Express.Multer.File  
+        const pdf = (req as any).pdf as Express.Multer.File
+        console.log(req.body, image, pdf)
 
-        const {filename: cover, response: responseImage} = await uploadFile(image)
-        const {filename: url, response: responsePdf} = await uploadFile(pdf)
+        const { filename: cover, response: responseImage } = await uploadFile(image)
+        const { filename: url, response: responsePdf } = await uploadFile(pdf)
 
-        if(!responseImage || !responsePdf)
-        {
+        if (!responseImage || !responsePdf) {
             return res.status(500).json({
                 success: false,
                 message: "Failed to upload image or pdf"
             })
         }
         const user = req.user;
-        if(!user)
-        {
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized"
             })
         }
 
-        const book = await Book.create({title, cover, url, author, category});
+        const book = await Book.create({ title, cover, url, author, category });
         return res.status(201).json({
             success: true,
             message: "Book added successfully",
@@ -154,7 +148,7 @@ export const addBook = async(
     }
 }
 
-export const issueBook = async(
+export const issueBook = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
@@ -162,8 +156,7 @@ export const issueBook = async(
     try {
         const { id } = req.params;
         const user = req.user;
-        if(!user)
-        {
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -173,16 +166,14 @@ export const issueBook = async(
             .findById(id)
             .populate("issuedBy", "name email phone");
 
-        if(!book)
-        {
+        if (!book) {
             return res.status(404).json({
                 success: false,
                 message: "Book not found"
             })
         }
 
-        if(book.issuedBy)
-        {
+        if (book.issuedBy) {
             return res.status(400).json({
                 success: false,
                 message: `Book already issued at ${book.issuedAt ?? ""}`
@@ -200,29 +191,27 @@ export const issueBook = async(
             data: book
         })
     }
-    catch(error)
-    {
+    catch (error) {
         return next(error)
     }
 }
 
 
-export const getIssuedBooks = async(
+export const getIssuedBooks = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
 ): Promise<any> => {
     try {
         const user = req.user;
-        if(!user)
-        {
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized"
             })
         }
 
-        const books = await Book.find({issuedBy: user})
+        const books = await Book.find({ issuedBy: user })
         return res.status(200).json({
             success: true,
             message: "Issued books fetched successfully",

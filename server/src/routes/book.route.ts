@@ -4,10 +4,10 @@ import { addBook, getBook, getBooks, getIssuedBooks, issueBook } from "../contro
 import { upload } from "../services/storage.service";
 const router = Router();
 
-router.get('/books', getBooks)
-router.get('/books/:id', getBook)
-router.post('/books/:id/issue',verifyAuth(['user']), issueBook)
+router.get('/', getBooks)
+router.get('/:id', getBook)
+router.post('/:id/issue', verifyAuth(['user']), issueBook)
 router.get('/issued-books', verifyAuth(['user']), getIssuedBooks)
-router.post('/books', verifyAuth(['admin']), upload.single("image"), upload.single("pdf"), addBook)
+router.post('/', verifyAuth(['admin']), upload.single("image"), upload.single("pdf"), addBook)
 
 export default router;

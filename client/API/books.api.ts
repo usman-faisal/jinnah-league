@@ -23,10 +23,11 @@ export const getAllBooks = async () => {
     }
 }
 
-export const addBook = async(bookData: AddBookData) => {
+export const addBook = async (formData: FormData) => {
     try {
-        const { data } = await api.post("/books", {...bookData})
-        console.log(data)
+        const { data } = await api.post("/books", formData, {
+            withCredentials: true,
+        })
         if (data.success) {
             return {
                 success: true,
