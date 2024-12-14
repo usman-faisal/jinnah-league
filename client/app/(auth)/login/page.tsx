@@ -88,10 +88,10 @@ const Login = () => {
           {/* Logo on top-right */}
           <div className="absolute top-5 right-5">
             <Image
-              src={"/logo.png"} // Your logo image
+              src={"/logo.png"} 
               alt="Logo"
-              width={120} // Adjust this as per your logo size
-              height={40} // Adjust this as per your logo size
+              width={120} 
+              height={40} 
               objectFit="contain"
             />
           </div>
