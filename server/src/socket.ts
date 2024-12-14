@@ -1,6 +1,10 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import { Notification } from "./models/notification.model";
+import { User } from "./models/user.model";
+import { ROLES } from "./utils/constants";
+import { Book } from "./models/book.model";
 
 const app = express();
 const server = http.createServer(app);
@@ -26,24 +30,18 @@ io.on("connection", (socket) => {
     // Send online users data to client
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-    // Handle the typing events from client
-    socket.on("startTyping", ({ participants, chatId }) => {
-        participants.forEach((participantId: string) => {
-            const participantSocketId = getRecipientSocketId(participantId);
-            if (participantSocketId) {
-                io.to(participantSocketId).emit("typing", { chatId, userId });
-            }
-        });
-    });
+    socket.on("issue-book", async ({ userId, bookId }) => {
+        const adminUser = await User.findOne({ role: ROLES.ADMIN })
+        const book = await Book.findById(bookId)
+        const userSocketId = getRecipientSocketId(userId);
+        const user = await User.findById(userId)
+        const notification = await Notification.create({
+            toUser: adminUser?._id,
+            fromUser: user,
+            content: `${user?.name} issued the book: ${book?.title}`
+        })
 
-    socket.on("issue-book", ({ users, bookId }) => {
-        users.forEach((user: string) => {
-            const userSocketId = getRecipientSocketId(user);
-            // Create a notification object and emit the created notification
-            if (userSocketId) {
-                io.to(userSocketId).emit("book-issued", { bookId, userId })
-            }
-        });
+        io.to(userSocketId).emit("book-issued", { bookId, userId: adminUser?._id, notification })
     })
 
     // Handle the disconnect event from client
