@@ -8,6 +8,7 @@ const BookSchema = new Schema<IBook>(
             type: String,
             required: [true, "Title is required"],
             trim: true,
+            unique: true,
         },
         cover: {
             type: String,

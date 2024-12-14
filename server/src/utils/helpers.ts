@@ -1,5 +1,6 @@
 import { CustomError } from "../middlewares/error.middleware";
 import crypto from "crypto";
+import { BookCategory } from "../types/type";
 
 export const throwError = (
   message: string | any,
@@ -50,3 +51,7 @@ export const getPaginatedData = async ({
 
   return { data, pagination };
 };
+
+export const validateBookCategory = (category: string): category is BookCategory => {
+  return Object.values(BookCategory).includes(category as BookCategory);
+}
