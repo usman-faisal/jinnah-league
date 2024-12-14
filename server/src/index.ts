@@ -9,10 +9,10 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { connectDb } from "./config/dbConnection";
 // Routes imports
 import authRoute from "./routes/auth.route";
+import { app, server } from "./socket";
 
 config();
 
-const app = express();
 
 // Middlewares
 app.use(
@@ -50,7 +50,7 @@ const PORT = process.env.PORT || 5000;
 // Connect To database first then start the server
 connectDb()
   .then(() => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on: http://localhost:${PORT}`);
     });
   })
