@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Logo from "../../public/logo.png"; // Replace this with your own logo image
-import Lib from "../../public/lib.jpg"; // Replace this with your own image
 import { toast } from "sonner";
-import Link from "next/link"; 
-import {loginUser} from "../../API/auth"
+import Link from "next/link";
+import { loginUser } from "@/API/auth";
 
-export default function Login() {
+const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -60,7 +58,7 @@ export default function Login() {
       return;
     }
     try {
-    const res = await loginUser(formData);
+      const res = await loginUser(formData);
       toast.success("Login successful! Welcome back.");
     } catch (err: any) {
       toast.error(err.message || "An error occurred, please try again.");
@@ -74,7 +72,7 @@ export default function Login() {
       {/* Left side: Image */}
       <div className="w-full lg:w-1/2 hidden lg:block relative">
         <Image
-          src={Lib} 
+          src={"/lib.jpg"}
           alt="Background Image"
           layout="fill"
           objectFit="cover"
@@ -87,7 +85,7 @@ export default function Login() {
           {/* Logo on top-right */}
           <div className="absolute top-5 right-5">
             <Image
-              src={Logo} // Your logo image
+              src={"/logo.png"} // Your logo image
               alt="Logo"
               width={120} // Adjust this as per your logo size
               height={40} // Adjust this as per your logo size
@@ -145,7 +143,7 @@ export default function Login() {
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
               <Link href="/signup" className="text-blue-600">
-              Sign Up
+                Sign Up
               </Link>
             </p>
           </div>
@@ -154,3 +152,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;
