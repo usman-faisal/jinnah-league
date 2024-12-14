@@ -19,3 +19,11 @@ export interface IPagination {
   hasNextPage: boolean;
   hasPrevPage: boolean;
 }
+
+export interface AddBookData {
+  title: string;
+  author: string;
+  image: File;
+  pdf: File;
+  category: BookCategory;
+}

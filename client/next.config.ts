@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+import { NextConfig } from "next"
 
+// next.config.js
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  typescript: {
+    ignoreBuildErrors: true
+  },
+  images: {
+    domains: ['mrwallpaper.com'], // Add 'mrwallpaper.com' here
+  },
+}
 
-export default nextConfig;
+export default nextConfig

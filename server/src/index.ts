@@ -9,10 +9,13 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import { connectDb } from "./config/dbConnection";
 // Routes imports
 import authRoute from "./routes/auth.route";
+import bookRoute from "./routes/book.route";
+import notificationsRoute from "./routes/notification.route";
+
+import { app, server } from "./socket";
 
 config();
 
-const app = express();
 
 // Middlewares
 app.use(
@@ -41,6 +44,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+app.use('/api/v1/books', bookRoute);
+app.use('/api/v1/notifications', notificationsRoute);
 
 // Middlewares
 app.use(errorMiddleware);
@@ -50,7 +55,7 @@ const PORT = process.env.PORT || 5000;
 // Connect To database first then start the server
 connectDb()
   .then(() => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server is running on: http://localhost:${PORT}`);
     });
   })
