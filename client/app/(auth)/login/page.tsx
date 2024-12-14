@@ -5,6 +5,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import Link from "next/link";
 import { loginUser } from "@/API/auth";
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -59,6 +60,8 @@ const Login = () => {
     }
     try {
       const res = await loginUser(formData);
+      console.log(res);
+      Cookies.set('token', res.data.token);
       toast.success("Login successful! Welcome back.");
     } catch (err: any) {
       toast.error(err.message || "An error occurred, please try again.");
