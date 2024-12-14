@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Lib from "../../public/lib.jpg"; // Replace this with your own image
-import Logo from "../../public/logo.png"; // Replace this with your own logo image
 import { toast } from "sonner";
-import Link from "next/link"; 
+import Link from "next/link";
+import { loginUser } from "@/API/auth";
 
-export default function SignUp() {
+const Login = () => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    phone: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,8 +25,8 @@ export default function SignUp() {
 
   // Validate the form data
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.phone) {
-      toast.error("Please fill in all fields.");
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in both email and password.");
       return false;
     }
 
@@ -37,13 +34,6 @@ export default function SignUp() {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailPattern.test(formData.email)) {
       toast.error("Please enter a valid email.");
-      return false;
-    }
-
-    // Basic phone validation (assuming the phone number is a simple number check for now)
-    const phonePattern = /^\+?[1-9]\d{1,14}$/;
-    if (!phonePattern.test(formData.phone)) {
-      toast.error("Please enter a valid phone number.");
       return false;
     }
 
@@ -67,25 +57,9 @@ export default function SignUp() {
       setLoading(false);
       return;
     }
-
     try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong!");
-      }
-
-      // Sign-up success
-      toast.success("Sign-up successful! You can now log in.");
-      // Optionally, redirect to login page or home
+      const res = await loginUser(formData);
+      toast.success("Login successful! Welcome back.");
     } catch (err: any) {
       toast.error(err.message || "An error occurred, please try again.");
     } finally {
@@ -98,20 +72,20 @@ export default function SignUp() {
       {/* Left side: Image */}
       <div className="w-full lg:w-1/2 hidden lg:block relative">
         <Image
-          src={Lib}
-          alt="Library Image"
+          src={"/lib.jpg"}
+          alt="Background Image"
           layout="fill"
           objectFit="cover"
         />
       </div>
 
-      {/* Right side: Sign-up Form */}
+      {/* Right side: Login Form */}
       <div className="w-full lg:w-1/2 flex justify-center items-center py-10 px-5 bg-gray-100">
         <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
           {/* Logo on top-right */}
           <div className="absolute top-5 right-5">
             <Image
-              src={Logo} // Your logo image
+              src={"/logo.png"} // Your logo image
               alt="Logo"
               width={120} // Adjust this as per your logo size
               height={40} // Adjust this as per your logo size
@@ -119,24 +93,9 @@ export default function SignUp() {
             />
           </div>
 
-          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Sign Up</h2>
+          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Login</h2>
 
           <form onSubmit={handleSubmit}>
-            {/* Name */}
-            <div>
-              <label className="font-semibold text-sm text-gray-600 pb-1 block" htmlFor="name">
-                Full Name
-              </label>
-              <input
-                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
             {/* Email */}
             <div>
               <label className="font-semibold text-sm text-gray-600 pb-1 block" htmlFor="email">
@@ -167,21 +126,6 @@ export default function SignUp() {
               />
             </div>
 
-            {/* Phone */}
-            <div>
-              <label className="font-semibold text-sm text-gray-600 pb-1 block" htmlFor="phone">
-                Phone Number
-              </label>
-              <input
-                className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
             {/* Submit Button */}
             <div className="mt-5 flex justify-center items-center">
               <button
@@ -189,7 +133,7 @@ export default function SignUp() {
                 type="submit"
                 disabled={loading}
               >
-                {loading ? "Signing up..." : "Sign Up"}
+                {loading ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
@@ -197,9 +141,9 @@ export default function SignUp() {
           {/* Link to Sign Up page */}
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <Link href="/login" className="text-blue-600">
-              Login
+              Don't have an account?{" "}
+              <Link href="/signup" className="text-blue-600">
+                Sign Up
               </Link>
             </p>
           </div>
@@ -208,3 +152,5 @@ export default function SignUp() {
     </div>
   );
 }
+
+export default Login;
