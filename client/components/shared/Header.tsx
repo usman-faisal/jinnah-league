@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { Notifications } from './Notifications'
 
 const adminNavLinks = [
     {
@@ -35,9 +36,12 @@ export const Header = () => {
                 }
             </div>
             {/* Profile */}
-            <div className=''>
-                <Image src="/logo.png" alt='logo' width={100} height={100} className='object-contain w-20 h-20 rounded-full' />
+            <div className='flex items-center gap-x-2'>
+                <Notifications />
+                <div className=''>
+                    <Image src="/logo.png" alt='logo' width={100} height={100} className='object-contain w-20 h-20 rounded-full' />
+                </div>
             </div>
-        </header>
+        </header >
     )
 }

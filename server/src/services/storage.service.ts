@@ -73,7 +73,6 @@ export const removeFile = async (filename: string) => {
   });
   await s3Client.send(command);
 
-  // Invalidate the cloudfront cache for the deleted image
   await invalidateCloudFrontCache(filename);
 };
 
