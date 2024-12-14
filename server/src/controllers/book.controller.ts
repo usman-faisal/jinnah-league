@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { validateBookCategory } from "../utils/helpers";
 import { Book } from "../models/book.model";
 import { AuthRequest } from "../middlewares/auth.middleware";
-import { uploadFile } from "../services/storage.service";
+import { getImageUrl, uploadFile } from "../services/storage.service";
 
 export const getBooks = async(
     req: Request,
@@ -19,7 +19,13 @@ export const getBooks = async(
                 return res.status(200).json({
                     success: true,
                     message: "Books fetched successfully",
-                    data: books
+                    data: books.map(book => {
+                        return {
+                            ...book,
+                            url: getImageUrl(book.url),
+                            cover: getImageUrl(book.cover)
+                        }
+                    })                
                 })
             }
         }
@@ -27,7 +33,13 @@ export const getBooks = async(
             return res.status(200).json({
                 success: true,
                 message: "Books fetched successfully",
-                data: books
+                data: books.map(book => {
+                    return {
+                        ...book,
+                        url: getImageUrl(book.url),
+                        cover: getImageUrl(book.cover)
+                    }
+                })
             })
         })
     } catch (error) {
